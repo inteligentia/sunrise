@@ -7,6 +7,8 @@ var outputRecord = document.querySelector('.recordDisp');
 
 var dataSetLength = 40;
 var d = new Date().getTime();
+var remoteX;
+var remoteY;
 var dataX = [];
 var dataY = [];
 var time = [];
@@ -18,42 +20,6 @@ var maxX;
 var minX;
 var maxY;
 var minY;
-const xServer = firebase.database().ref().child('Mob'); //Set real-time database
-
-
-
-// On-board
-var x;
-var y;
-function handleOrientation(event) {
-  x = event.beta;  // In degree in the range [-180,180]
-  y = event.gamma; // In degree in the range [-90,90]
-  // To make computation easier we shift the range of x and y to [0,180]
-  x += 90;
-  y += 90;
-
-  if(e==1 && runStop==1){
-	  xServer.update({
-		valueX: x
-	  });
-	  xServer.update({
-		valueY: y
-	  });
-  }
-}
-window.addEventListener('deviceorientation', handleOrientation);
-
-//Remote
-var Remote;
-var remoteX;
-var remoteY;
-xServer.on('value',snap => {
-	remote = snap.val();
-	remoteX = snap.val().valueX;
-	remoteY = snap.val().valueY;
-});
-
-
 
 //Plot variables
 
@@ -68,23 +34,9 @@ var trace1 = {
 		line: {
     		color: 'rgb(55, 128, 180)',
     		width: 2
-  		}
+  		},
+  		hoverinfo: 'none'
 };
-
-var trace2 = {
-		x: time,  
-		y: dataY,
-		mode: 'lines+markers',
-		type: 'scatter',
-		marker: { size: 1 },
-		name: 'Gamma',
-		width: 3,
-		connectgaps: false,
-		line: {
-    		color: 'rgb(255, 175, 26)',
-    		width: 2
-  		}
- };
 
  var trace2 = {
 		x: time,  
@@ -96,7 +48,9 @@ var trace2 = {
     		color: 'rgb(55, 128, 220)',
     		width: 1,
     		dash: 'dot'
-  		}
+  		},
+  		showlegend: false,
+  		hoverinfo: 'none'
 };
 
 var trace3 = {
@@ -109,7 +63,9 @@ var trace3 = {
     		color: 'rgb(23, 106, 180)',
     		width: 1,
     		dash: 'dot'
-  		}
+  		},
+  		showlegend: false,
+  		hoverinfo: 'none'
 };
 
 var trace4 = {
@@ -124,7 +80,8 @@ var trace4 = {
 		line: {
     		color: 'rgb(255, 175, 26)',
     		width: 2
-  		}
+  		},
+  		hoverinfo: 'none'
 };
 
 var trace5 = {
@@ -137,7 +94,9 @@ var trace5 = {
     		color: 'rgb(255, 166, 0)',
     		width: 1,
     		dash: 'dot'
-  		}
+  		},
+  		showlegend: false,
+  		hoverinfo: 'none'
 };
 
 var trace6 = {
@@ -150,14 +109,18 @@ var trace6 = {
     		color: 'rgb(221, 152, 22)',
     		width: 1,
     		dash: 'dot'
-  		}
+  		},
+  		showlegend: false,
+  		hoverinfo: 'none'
 };
 
  var trace7 = {
   		x: [2],
  		y: [2],
- 		text: ['System paused, select a source device and click the Run/Stop button'],
-		mode: 'text'
+ 		text: ['System paused'],
+		mode: 'text',
+  		showlegend: false,
+  		hoverinfo: 'none'
 };
 
 var data = [trace1, trace2, trace3, trace4, trace5, trace6];
@@ -169,19 +132,19 @@ var layout = {
 	size: 12,
 	color: '#7f7f7f',
   },
-  xaxis: {
-    title: 'Time (seconds)',
-  },
+  autosize: true,
   margin: {
     l: 50,
-    r: 50,
-    b: 75,
+    r: 25,
+    b: 100,
     t: 50,
     pad: 2
   },
+  showlegend: true,
+  legend: {"orientation": "h"},
 }
 
-Plotly.newPlot('plotDiv', pause, layout);
+Plotly.newPlot('plotDiv', pause, layout, {displayModeBar: false});
 outputX.innerHTML = "Beta : " + "<br>";
 outputX.innerHTML += "max: " + "<br>";
 outputX.innerHTML += "min: ";
@@ -190,16 +153,72 @@ outputY.innerHTML += "max: " + "<br>";
 outputY.innerHTML += "min: ";
 
 
-
-
-//Sunrise Functions
-
+//Setup Functions
 var e = 1;
 function setdevice(device)
 {
 	e= device;
 }
 
+//Generate random tracking Pin (only once)
+var setion;
+var executed = false;
+function makePin()
+{
+    if (!executed && e == 1) {
+        executed = true;
+
+		var pin="";
+	    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+	    for( var i=0; i < 5; i++ )
+	       pin += possible.charAt(Math.floor(Math.random() * possible.length));
+	   	document.getElementById("dispPin").innerHTML = pin;
+	   	setion = String(pin);
+
+		firebase.database().ref().child(pin).set("Root"); //Set real-time database for new Pin
+		firebase.database().ref(pin).child('valueX').set(0);
+		firebase.database().ref(pin).child('valueY').set(0);
+
+	}
+}
+
+
+// On-board data update
+var x =0;
+var y =0;
+function handleOrientation(event) {
+	x = event.beta;  // In degree in the range [-180,180]
+	y = event.gamma; // In degree in the range [-90,90]
+	// To make computation easier we shift the range of x and y to [0,180]
+	x += 90;
+	y += 90;
+	x = parseInt(x);
+	y = parseInt(y);
+}
+window.addEventListener('deviceorientation', handleOrientation);
+
+
+
+
+//Input tracking Pin
+var pinTrack ="";
+function setPin() {
+    pinTrack = (document.getElementById("inputTrackPin").value).toUpperCase();
+}
+
+//Bind keyboard Enter to submit tracking Pin
+document.getElementById("inputTrackPin")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("runStopButton").click();
+    }
+}); 
+
+
+
+//Sunrise Functions
 var runStop= 0;
 function stop()
 {
@@ -222,6 +241,8 @@ function stop()
 		logDataCheck.checked = false;
 		document.getElementById('toggleTab1').style.pointerEvents = 'auto';
 		document.getElementById('toggleTab2').style.pointerEvents = 'auto';
+		firebase.database().ref(setion).child('valueX').set(0);
+		firebase.database().ref(setion).child('valueY').set(0);
 		runStop = 0;
 		return;
 	}
@@ -239,7 +260,7 @@ function setReset() {
 
 function run(){
 
-	//On-Board
+	//Broadcast
 	if (e==1) {
 	 function dataRequestLoop(i) {
 	    if (i < 1){
@@ -250,8 +271,13 @@ function run(){
 	    }
 	    setTimeout(function () {
 	        now = new Date().getTime();
-			dataX[dataSetLength-i] = parseInt(x);
-			dataY[dataSetLength-i] = parseInt(y);
+			dataX[dataSetLength-i] = x;
+			dataY[dataSetLength-i] = y;
+
+			//On-board data update
+			firebase.database().ref().child(setion).update({"valueX": x});
+			firebase.database().ref().child(setion).update({"valueY": y});
+
 			maxX = Math.max.apply(null, dataX.filter(function(n) { return !isNaN(n); })); //filters out NaN values from array
 			minX = Math.min.apply(null, dataX.filter(function(n) { return !isNaN(n); })); //filters out NaN values from array
 			maxY = Math.max.apply(null, dataY.filter(function(n) { return !isNaN(n); })); //filters out NaN values from array
@@ -284,7 +310,7 @@ function run(){
 				outputY.innerHTML = "Gamma: " + "<br>";
 				outputY.innerHTML += "max: " + "<br>";
 				outputY.innerHTML += "min: ";
-				Plotly.newPlot('plotDiv', pause, layout); 
+				Plotly.newPlot('plotDiv', pause, layout, {displayModeBar: false}); 
 				return;
 			} //breaks infinite loop
 	        dataRequestLoop(--i);
@@ -303,9 +329,18 @@ function run(){
 	    	time.shift();
 	    }
 	    setTimeout(function () {
-	        now = new Date().getTime();	
+	        now = new Date().getTime();
+
+			//Remote data request
+			server = firebase.database().ref().child(pinTrack);//Set real-time database for new Pin
+			server.on('value',snap => {
+				remoteX = snap.val().valueX;
+				remoteY = snap.val().valueY; 
+			});
+
 			dataX[dataSetLength-i] = parseInt(remoteX);
 			dataY[dataSetLength-i] = parseInt(remoteY);
+
 			maxX = Math.max.apply(null, dataX);
 			minX = Math.min.apply(null, dataX);
 			maxY = Math.max.apply(null, dataY);
@@ -314,7 +349,7 @@ function run(){
 			outputX.innerHTML = "Beta : " + parseInt(remoteX).toPrecision(3) + "\n" + "<br>";
 	    	outputX.innerHTML += "max: " + maxX.toPrecision(3) + "\n" + "<br>";
 	    	outputX.innerHTML += "min: " + minX.toPrecision(3) + "\n";
-			outputY.innerHTML = "Gamma: " + parseInt(remoteX).toPrecision(3) + "\n" + "<br>";
+			outputY.innerHTML = "Gamma: " + parseInt(remoteY).toPrecision(3) + "\n" + "<br>";
 			outputY.innerHTML += "max: " + maxY.toPrecision(3) + "\n" + "<br>";
 	    	outputY.innerHTML += "min: " + minY.toPrecision(3) + "\n";
     		for (var t = 0; t < time.length; t++) {
@@ -336,7 +371,7 @@ function run(){
 				outputY.innerHTML = "Gamma: " + "<br>";
 				outputY.innerHTML += "max: " + "<br>";
 				outputY.innerHTML += "min: ";
-				Plotly.newPlot('plotDiv', pause, layout); 
+				Plotly.newPlot('plotDiv', pause, layout, {displayModeBar: false}); 
 				return;
 			} //breaks infinite loop
 	        dataRequestLoop(--i);
