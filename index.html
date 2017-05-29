@@ -62,19 +62,19 @@
 		    <br>
 		      <b>Real-time remote motion tracking</b>
 		      <p>Real-time motion events tracking from remote device.</p>
-		      <form class="form-inline">
+		      <form class="form-inline" onSubmit="return false;">
  				 <div class="form-group">
    					 Enter the 5 digit tracking pin:
-					<input style="width: 30%; text-transform:uppercase" type="text" class="form-control input-sm" placeholder="PIN" id="inputTrackPin">
+					<input type="text" id="inputTrackPin" style="width: 30%; text-transform:uppercase" class="form-control input-sm" placeholder="PIN">
 				</div>
 			  </form>
 		    </div>
-
+ 
 		  </div>
 
 		  <div style="text-align: left; margin-top: 10px; margin-bottom: -10px;" >
 			<label style="margin-left: 5px" class="radio-inline"><input type="radio" id="logDataCheck" onchange="setLogData()">Log setion data</label>
-			<button style="margin-left: 5px" type="button" class="btn btn-default" id="runStopButton" onclick="run(), stop(), setLogData(), setPin(), makePin()">Run/Stop <span style="text-decoration: none" class="recordDisp text-danger Blink"></span></button>
+			<button type="button" id="runStopButton" style="margin-left: 5px" class="btn btn-default" onclick="run(), stop(), setLogData(), setPin(), makePin()">Run/Stop <span style="text-decoration: none" class="recordDisp text-danger Blink"></span></button>
 			<table class="table" >
 			<caption>Real-time data:</caption>
 				<td>
