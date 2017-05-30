@@ -50,24 +50,24 @@
 		      <br>
 		      <b>Real-time motion broadcasting</b>
 		      <p>Use the curent device as a motion tracker. Mouvements are discribed by the rotation angle &beta; around the x axis and &gamma; around the y axis.</p> 
-
-			<div class="btn-group btn-group-sm" role="group">
-			  <button type="button" class="btn btn-default" id="randPinGen" onclick="makePin()">Generate connection PIN</button>
-			  <button type="button" class="btn btn-default"><span style="font-weight: bold;" id="dispPin"><span style="color: #cccccc; font-weight: normal;">random</span></span></button>
-			</div><br>
-
+			  <div class="btn-group btn-group-sm" role="group">
+			    <button type="button" class="btn btn-default" id="randPinGen" onclick="makePin()">Generate connection PIN</button>
+			    <button style="pointer-events: none;" type="button" class="btn btn-default"><span style="font-weight: bold;" id="dispPin"><span style="color: #999999; font-weight: normal;">random</span></span></button>
+			 </div><br>
 		    </div>
 
 		    <div id="remote" class="tab-pane">
-		    <br>
+		      <br>
 		      <b>Real-time remote motion tracking</b>
 		      <p>Real-time motion events tracking from remote device.</p>
-		      <form class="form-inline" onSubmit="return false;">
- 				 <div class="form-group">
-   					 Enter the 5 digit tracking pin:
-					<input type="text" id="inputTrackPin" style="width: 30%; text-transform:uppercase" class="form-control input-sm" placeholder="PIN">
-				</div>
-			  </form>
+		        <div>
+				  <div class="input-group input-group-sm">
+			       <span class="input-group-btn">
+			        <button class="btn btn-default" type="button" style="pointer-events: none;">Enter tracking PIN</button>
+			       </span>
+			       <input type="text" id="inputTrackPin" style="text-transform:uppercase; width: 100px" class="form-control input-sm" placeholder="PIN">
+			      </div>
+		       </div>
 		    </div>
  
 		  </div>
