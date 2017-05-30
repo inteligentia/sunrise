@@ -241,8 +241,11 @@ function stop()
 		logDataCheck.checked = false;
 		document.getElementById('toggleTab1').style.pointerEvents = 'auto';
 		document.getElementById('toggleTab2').style.pointerEvents = 'auto';
-		firebase.database().ref(setion).child('valueX').set(0);
-		firebase.database().ref(setion).child('valueY').set(0);
+		if (setion != null){
+			firebase.database().ref(setion).child('valueX').set(0);
+			firebase.database().ref(setion).child('valueY').set(0);
+
+		}
 		runStop = 0;
 		return;
 	}
