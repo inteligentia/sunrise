@@ -30,15 +30,25 @@
 	</script>
 </head>
 
+
 <body>
 	<div style="text-align: center; font-family: 'Dosis', sans-serif;">
-	<H1><font color="#a6a6a6">Sunrise</font><sup><font color="#ffaf1a">&#11044;</font></sup> </H1>
+		<H1><font color="#a6a6a6">Sunrise</font><sup><font color="#ffaf1a">&#11044;</font></sup> </H1>
+	</div>
+
+	<div class="container">
+	  <blockquote style="font-size: medium;">
+	    <p>Sunrise is a pure javascript real-time motion event monitoring and broadcasting system for gyroscope equipped devices. To get started:</p>
+	    <ol>
+		  <li><u>Broadcasting:</u> use any gyroscope equipped device (smartphone/tablet) and navigate to this page. Click on <kbd>Generate connection PIN</kbd> and start the broadcast.</li>
+		  <li><u>Monitoring:</u> on a separate device, navigate to the same address. Select tab <kbd>Remote</kbd>, input the <code>PIN</code> assigned to your broadcasting device, and start the capture.</li>
+		</ol> 
+	  </blockquote>
 	</div>
 
 	<div class="container">
 	  <div class="col-sm-5" style="padding-top: 10px;">
-
-		 <H4>Tracking mode:</H4>
+	  	  <h4>Tracking mode:</h4>
 		  <ul class="nav nav-tabs" id="device">
 		    <li class="active"><a id="toggleTab2" data-toggle="tab" href="#onBoard" onclick="javascript:setdevice(1)">Broadcast</a></li>
 		    <li><a id="toggleTab1" data-toggle="tab" href="#remote" onclick="javascript:setdevice(2)">Remote</a></li>
@@ -88,12 +98,12 @@
 	      <a onmouseover="this.style.cursor='pointer';" data-toggle="collapse" data-target="#all_data" style="margin-left: 10px">See all logged data &rarr;</a>
 	  </div>
 
-		 <div class="col-sm-6">
-			<div id="plotDiv"></div>
-		 </div>
+	  <div class="col-sm-6">
+		<div id="plotDiv"></div>
+	  </div>
 
-		 <div class="col-sm-1">
-		 </div>
+	  <div class="col-sm-1">
+	  </div>
 	</div>
 
 	<div class="container">
@@ -118,8 +128,9 @@
 		 <div class="col-sm-1">
 		 </div>
 	</div>
+
 	<div style="text-align: center;">
-		<p><b class="h3" style="font-family: Linden Hill; color: #808080">Inteligentia.</b><br><a href="http://inteligentia.org/" style="color: #808080">inteligentia.org</a></p>
+		<p><b class="h3" style="font-family: Linden Hill; color: #808080">Jad Feghali</b><br><a href="http://inteligentia.org/" style="color: #808080">jadfegh.com</a></p>
 	</div>
     <script src="main.js"></script>
 </body>
